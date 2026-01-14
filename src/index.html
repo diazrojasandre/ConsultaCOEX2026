@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCU-COEX Consulta</title>
+    <style>
+        :root {
+            --primary-color: #004a99;
+            --primary-dark: #003366;
+            --accent-color: #e6f0fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --text-color: #333;
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Menú de navegación por tarjetas */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .nav-card {
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .nav-card.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .nav-card h3 {
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        /* Área de contenido dinámico */
+        #content-area {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            min-height: 300px;
+            display: none; 
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .content-body h4 {
+            color: var(--primary-dark);
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .content-body p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        /* Estilos de listas */
+        .info-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .info-list li {
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .info-list li span.icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Estilos específicos por sección */
+        .list-requirements li {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .list-proscription li {
+            border-left: 5px solid var(--danger-color);
+            background-color: #fff5f5;
+        }
+
+        .proscription-title {
+            color: var(--danger-color) !important;
+        }
+
+        .note-box {
+            background-color: var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            font-weight: 600;
+            margin-top: 25px;
+        }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            padding: 40px 20px 20px;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        /* Responsividad */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            #content-area { padding: 25px 15px; }
+            .nav-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>TCU-COEX Consulta</h1>
+            <p class="subtitle">Selecciona una opción para ver información detallada</p>
+        </header>
+
+        <nav class="menu-grid" id="main-menu">
+            <div class="nav-card" onclick="loadContent('queEs')" id="btn-queEs" role="button" tabindex="0">
+                <h3>¿Qué es un COEX?</h3>
+            </div>
+            <div class="nav-card" onclick="loadContent('requisitos')" id="btn-requisitos" role="button" tabindex="0">
+                <h3>Requisitos para autorizar un COEX</h3>
+            </div>
+            <div class="nav-card" onclick="loadContent('proscripcion')" id="btn-proscripcion" role="button" tabindex="0">
+                <h3>Proscripción para COEX</h3>
+            </div>
+        </nav>
+
+        <article id="content-area">
+            <!-- El contenido se inyecta aquí con JS -->
+        </article>
+    </div>
+
+    <footer>
+        <p>Universidad Castro Carazo 2026 - COEX/TCU</p>
+        <p>Elaborado por: Licdo. André Díaz Rojas, MBA.</p>
+    </footer>
+
+    <script>
+        const contentData = {
+            queEs: {
+                title: "¿Qué es un COEX?",
+                html: `
+                    <div class="content-body">
+                        <h4>¿Qué es un proyecto pre-aprobado?</h4>
+                        <p>Se entiende por proyecto pre-aprobado como aquel documento diseñado por la Universidad para desarrollar TCU y que se encuentra completamente estructurado en el formato, actividades e inversión de horas.</p>
+
+                        <h4>¿Cuándo se dispone de los proyectos pre-aprobados?</h4>
+                        <p>Estos proyectos se colocan a disposición de las personas estudiantes de TCU a partir de la semana 1 del cuatrimestre una vez son admitidos(as) en las organizaciones para realizar TCU. El proyecto es una elección propia de la persona estudiante en función a sus gustos, intereses y habilidades.</p>
+
+                        <h4>¿Cuál es la guía referencial para los proyectos pre-aprobados?</h4>
+                        <p>Todos los proyectos pre-aprobados fueron diseñados siguiendo el modelo educativo de la universidad, la Ecoformación, así como los lineamientos de los 17 objetivos de desarrollo sostenibles.</p>
+
+                        <h4>¿Cuáles son los pasos para iniciar el proceso de la organización COEX y el proyecto pre-aprobado?</h4>
+                        <ul class="info-list">
+                            <li><span class="icon">1.</span> Conversar con la organización que se quiere postular para realizar TCU la posibilidad de implementar un proyecto pre-aprobado de los 150 ofrecidos.</li>
+                            <li><span class="icon">2.</span> Realizar la proposición de la organización a la Universidad.</li>
+                            <li><span class="icon">3.</span> Una vez recibido el visto bueno, se procede a llenar el formulario acorde a las instrucciones docentes.</li>
+                            <li><span class="icon">4.</span> Finalmente, se procede con la implementación del proyecto.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            requisitos: {
+                title: "Requisitos para autorizar un COEX",
+                html: `
+                    <div class="content-body">
+                        <p><strong>Para autorizar un COEX, la organización debe:</strong></p>
+                        <ul class="info-list list-requirements">
+                            <li><span class="icon">✅</span> Ser una organización sin fines de lucro: asociaciones, fundaciones, escuelas MEP, etc.</li>
+                            <li><span class="icon">✅</span> Poseer cédula jurídica.</li>
+                            <li><span class="icon">✅</span> Contar con sello húmedo o firma digital autorizada.</li>
+                            <li><span class="icon">✅</span> Permitir la toma de evidencias: fotos, videos, entre otros.</li>
+                            <li><span class="icon">✅</span> Permitir ejecutar un proyecto pre-aprobado por la Universidad (no se autorizan proyectos diferentes).</li>
+                            <li><span class="icon">✅</span> Disponer de una población de mínimo 5 personas y máximo 20 personas para realizar las actividades de TCU (población externa; no se autorizan administrativos de la organización).</li>
+                        </ul>
+                        <div class="note-box">
+                            “Toda organización COEX será analizada y se brindará la respectiva decisión sobre la propuesta: aprobada o rechazada.”
+                        </div>
+                    </div>
+                `
+            },
+            proscripcion: {
+                title: "Proscripción para COEX",
+                html: `
+                    <div class="content-body">
+                        <p class="proscription-title"><strong>En TCU no autorizamos COEX de la siguiente forma:</strong></p>
+                        <ul class="info-list list-proscription">
+                            <li><span class="icon">⛔</span> Organizaciones con fines de lucro, empresas privadas y/o PYMES.</li>
+                            <li><span class="icon">⛔</span> Realizar TCU en la misma empresa/organización donde labora la persona estudiante.</li>
+                            <li><span class="icon">⛔</span> Organizaciones que no están inscritas en el Registro Nacional o no disponen de cédula jurídica.</li>
+                            <li><span class="icon">⛔</span> Instituciones que no posean sello húmedo: redes de cuido, CEN-CINAI, centros de atención integral (CAI), IMAS, CECUDI, entre otros relacionados.</li>
+                            <li><span class="icon">⛔</span> Comedores institucionales.</li>
+                            <li><span class="icon">⛔</span> Organizaciones que no dispongan de un espacio físico acorde para realizar TCU. No se aprueban casas, garajes, plazas, parques, etc.</li>
+                            <li><span class="icon">⛔</span> Si la persona cursa la carrera de licenciatura en docencia, no puede realizar el TCU en ninguna institución del MEP.</li>
+                            <li><span class="icon">⛔</span> Asociaciones deportivas, escuelas deportivas o cualquier institución dedicada a la parte de deportes.</li>
+                            <li><span class="icon">⛔</span> TCU en municipalidades, universidades estatales, ministerios públicos y/o entidades estatales de orden administrativo.</li>
+                            <li><span class="icon">⛔</span> No se autoriza realizar TCU en instituciones que trabajen con personas con diagnósticos de cáncer, enfermedades terminales, trastornos mentales severos u otras condiciones que demanden acompañamiento clínico o terapéutico especializado.</li>
+                        </ul>
+                    </div>
+                `
+            }
+        };
+
+        function loadContent(id) {
+            const display = document.getElementById('content-area');
+            const data = contentData[id];
+
+            // Resetear estados de botones
+            document.querySelectorAll('.nav-card').forEach(card => card.classList.remove('active'));
+            document.getElementById('btn-' + id).classList.add('active');
+
+            // Preparar el HTML (Sin el botón de volver al menú)
+            let contentHTML = `
+                <h2 class="section-title ${id === 'proscripcion' ? 'proscription-title' : ''}">${data.title}</h2>
+                ${data.html}
+            `;
+
+            // Efecto de cambio suave
+            display.style.display = 'none';
+            display.innerHTML = contentHTML;
+            
+            setTimeout(() => {
+                display.style.display = 'block';
+                // Scroll suave hacia el contenido en móviles
+                if(window.innerWidth < 768) {
+                    display.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 50);
+        }
+
+        // Accesibilidad: Navegación por teclado
+        document.querySelectorAll('.nav-card').forEach(card => {
+            card.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    this.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
